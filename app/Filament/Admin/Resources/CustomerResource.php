@@ -24,7 +24,7 @@ class CustomerResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'phone', 'uid'];
+        return ['name', 'phone', 'uid'];
     }
 
     public static function form(Form $form): Form

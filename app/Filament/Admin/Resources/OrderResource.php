@@ -37,7 +37,7 @@ class OrderResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['customer.full_name','price'];
+        return ['customer.name', 'price'];
     }
 
     public static function form(Form $form): Form

@@ -11,9 +11,7 @@ class ProductController extends Controller
     public function index()
     {
 
-        $product  = Product::all();
-        // dd($product);
-
+        $product = Product::where('stock', '>', 0)->where('is_enabled', 1)->paginate(10);
         return view('products', ['product' => $product]);
     }
 }

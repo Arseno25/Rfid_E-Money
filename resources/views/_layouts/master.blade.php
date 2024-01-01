@@ -16,8 +16,7 @@
 
     <title>{{config()->get('app.name')}}</title>
 
-    @vite('resources/css/app.css')
-    @vite('resources/css/app.js')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>

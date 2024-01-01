@@ -10,9 +10,6 @@
 
     {{-- <meta name="description" content="{{ $paage->description }}"> --}}
 
-{{--    <link rel="stylesheet" href="{{ asset('build/assets/app-ee148ebf.css') }}">--}}
-
-{{--    <script type="module" src="{{ asset('build/assets/app-154cb3de.js') }}"></script>--}}
 
     <title>{{config()->get('app.name')}}</title>
 

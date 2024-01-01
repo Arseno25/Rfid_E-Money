@@ -4,6 +4,9 @@
 <div class="container mx-auto px-6">
     <h3 class="text-gray-700 text-2xl font-medium">All Product</h3>
         <span class="mt-3 text-sm text-gray-500">{{  $product->where('is_enabled', 1)->count()}} Products</span>
+        @if(count($product->where('is_enabled', 1)) == 0)
+            <div class="text-center text-gray-500 text-3xl font-bold flex justify-center items-center w-full h-auto">No products available.</div>
+        @else
     <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6">
         @foreach ($product as $item)
             @if( $item->stock > 0 && $item->is_enabled == 1)
@@ -31,6 +34,7 @@
             @endif
         @endforeach
     </div>
+        @endif
     <div class="flex justify-center">
         <div class="flex rounded-md mt-8">
             {{ $product->links() }}

@@ -11,7 +11,7 @@
     {{-- <meta name="description" content="{{ $paage->description }}"> --}}
 
 
-    <title>{{config()->get('app.name')}}</title>
+    <title>ZARLY PETSHOP</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

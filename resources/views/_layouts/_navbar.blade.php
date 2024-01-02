@@ -8,7 +8,7 @@
 {{--                <span class="mx-1 text-sm"></span>--}}
             </div>
             <div class="w-full text-gray-700 md:text-center text-2xl font-semibold">
-                {{ config('app.name') }}
+                ZARLY PETSHOP
             </div>
             <div class="flex items-center justify-end w-full">
 {{--                <button @click="cartOpen = !cartOpen" class="text-gray-600 focus:outline-none mx-4 sm:mx-0">--}}

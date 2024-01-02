@@ -25,7 +25,7 @@
                     </div>
                     <div class="px-5 py-3">
                         <strong><h1 class="text-gray-700 uppercase justify-center flex">{{ $item->name }}</h1></strong>
-                        <h3 class="text-gray-500 mt-2 font-bold justify-center flex">Rp.{{ $item->price }}</h3>
+                        <h3 class="text-gray-500 mt-2 font-bold justify-center flex">{{formatCurrency($item->price) }}</h3>
                     </div>
                     <div class="flex items-center justify-between px-5 py-3 ">
                         <span class="text-black-100 text-sm mt-2 justify-center flex rounded bg-neutral-200 px-2 opacity-70 py-1 font-bold text-neutral-600"> Stock: {{ $item->stock }}</span>

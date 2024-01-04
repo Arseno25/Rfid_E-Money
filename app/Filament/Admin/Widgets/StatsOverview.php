@@ -15,16 +15,29 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        $totalSum = formatCurrency(Order::where('status', Success::$name)->sum('total'));
-        $total = Order::count();
+        // Mengambil semua data order sesuai status
+        $orders = Order::where('status', Success::$name)->get();
+
+        // Mendapatkan total sum dari kolom 'total'
+        $totalSum = formatCurrency($orders->sum('total'));
+
+        // Mendapatkan total jumlah order
+        $total = $orders->count();
+
+        // Mendapatkan array dari nilai kolom 'total' untuk digunakan dalam chart
+        $chartData = $orders->pluck('total')->toArray();
+
         return [
             Stat::make('Total Customers', Customer::count()),
             Stat::make('Total Product', Product::count()),
             Stat::make('Total Transaksi', $totalSum)
                 ->description('Jumlah Transaksi')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([$total])
+            ->chart($chartData)
+            
                 ->color('success'),
+
+            
         ];
     }
 }

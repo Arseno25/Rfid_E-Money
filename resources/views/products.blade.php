@@ -31,7 +31,7 @@
                             <h3 class="text-gray-500 mt-2 font-bold justify-center flex">{{ formatCurrency($item->price) }}</h3>
                         </div>
                         <div class="flex items-start justify-start px-5 py-3">
-                            <span class="text-black-100 text-sm mt-2 justify-center flex rounded bg-neutral-200 px-2 opacity-70 py-1 font-bold text-neutral-600"> Stock: {{ $item->stock }}</span>
+                            <span class="text-black-100 text-sm mt-2 justify-center flex rounded bg-neutral-200 px-2 opacity-70 py-1 font-bold text-neutral-600">{{ $item->category->name }}</span>
                         </div>
                     </div>
                 @endif

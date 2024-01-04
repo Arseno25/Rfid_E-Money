@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
 
-        $product = Product::where('stock', '>', 0)->where('is_enabled', 1)->paginate(3);
+        $product = Product::where('stock', '>', 0)->where('is_enabled', 1)->paginate(10);
         return view('products', ['product' => $product]);
     }
 }

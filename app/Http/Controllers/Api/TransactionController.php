@@ -9,12 +9,23 @@ use App\Models\Product;
 use App\Models\States\Status\Inactive;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
     public function prosesTransaksi(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'uid' => 'required',
+            'qty' => 'required|numeric',
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($this->generateErrorResponse("ID Belum Terdaftar atau Jumlah Barang Tidak Valid"));
+        }
+
         $uid = $request->input('uid');
         $qty_barang = $request->input('qty');
 
@@ -75,7 +86,7 @@ class TransactionController extends Controller
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
 
-            if ($saldo_setelah_transaksi < 0) {
+            if ($saldo_setelah_transaksi <= 0) {
                 DB::rollback();
                 $this->saveOrder($user, $product, $qty_barang, 'failed');
                 return response()->json($this->generateErrorResponse("Saldo Tidak Cukup"));
@@ -84,7 +95,7 @@ class TransactionController extends Controller
             $user->balance = $saldo_setelah_transaksi;
             $user->save();
 
-            if ($product->stock == 0) {
+            if ($product->stock <= 0) {
                 $product->update(['is_enabled' => 0]);
             }
 
@@ -92,7 +103,7 @@ class TransactionController extends Controller
             $this->saveOrder($user, $product, $qty_barang, 'success');
 
             // Berikan 3 poin kepada pengguna setiap 10.000 rupiah transaksi
-            $jumlah_poin = floor(($product->price * $qty_barang) / 10000) * 3;
+            $jumlah_poin = (int) floor(($product->price * $qty_barang) / 10000) * 3;
             $user->point += $jumlah_poin;
             $user->save();
 

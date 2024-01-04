@@ -12,6 +12,7 @@ class TransactionChart extends ChartWidget
 {
     protected static ?string $heading = 'Jumlah Transaksi';
     protected int|string|array $columnSpan = 2;
+    
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array

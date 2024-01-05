@@ -15,6 +15,8 @@ class TransactionChart extends ChartWidget
     
     protected static ?string $pollingInterval = null;
 
+    protected static ?string $maxHeight = '300px';
+
     protected function getData(): array
     {
         $data = Trend::model(Order::class)

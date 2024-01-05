@@ -31,13 +31,10 @@ class StatsOverview extends BaseWidget
             Stat::make('Total Customers', Customer::count()),
             Stat::make('Total Product', Product::count()),
             Stat::make('Total Transaksi', $totalSum)
-                ->description('Jumlah Transaksi')
+            ->description('Total Transaksi')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
             ->chart($chartData)
-            
                 ->color('success'),
-
-            
         ];
     }
 }

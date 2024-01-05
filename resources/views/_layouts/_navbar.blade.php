@@ -36,7 +36,7 @@
         <form method="GET" action="{{ route('search') }}">
         <div class="relative mt-6 max-w-lg mx-auto">
             <label>
-                <input class="pl-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="query" type="text" placeholder="Search.." value="{{ old('query', $search) ?? $search }}">
+                <input class="pl-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="query" id="query" type="text" placeholder="Search.." value="{{ old('query', $search) }}">
             </label>
             <button type="submit" class="absolute inset-y-0 right-0 px-3 flex items-center hover:bg-gray-100">
                 <svg class="h-5 w-5 text-gray-500 transition-transform transform hover:text-blue-500" viewBox="0 0 24 24" fill="none">

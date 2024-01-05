@@ -22,6 +22,6 @@ class ProductController extends Controller
             ->where('stock', '>', 0)
             ->where('is_enabled', 1)
             ->paginate(10);
-        return view('products', ['product' => $product, 'search' => $search]);
+        return view('products', ['product' => $product], compact('search'));
     }
 }

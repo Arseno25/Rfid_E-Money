@@ -1,80 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google tag (gtag.js) -->
+    <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-1752YPLP7H"
+    ></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "G-1752YPLP7H");
+    </script>
 
     <title>404</title>
-
-    <style>
-        .page_404 {
-          width: 100%;
-            padding: 40px 0;
-            background: #fff;
-            font-family: "Arvo", serif;
-        }
-
-        .page_404 img {
-            width: 100%;
-        }
-
-        .four_zero_four_bg {
-            background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
-            height: 400px;
-            width: 100%;
-            background-position: center;
-        }
-
-        .four_zero_four_bg h1 {
-            font-size: 80px;
-        }
-
-        .four_zero_four_bg h3 {
-            font-size: 80px;
-        }
-
-        .link_404 {
-            color: #fff !important;
-            padding: 10px 20px;
-            background: #39ac31;
-            margin: 20px 0;
-            display: inline-block;
-        }
-
-        .contant_box_404 {
-            margin-top: -50px;
-        }
-    </style>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link type="text/css" rel="stylesheet" href="{{asset('assets/css/404.css')}}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/images/tsParticles-64.png')}}" />
 </head>
 
-<body>
-    <section class="page_404">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 ">
-                    <div class="col-sm-10 col-sm-offset-1  text-center">
-                        <div class="four_zero_four_bg">
-                            <h1 class="text-center ">404</h1>
-                        </div>
+<body class="permission_denied">
+<div id="tsparticles"></div>
+<div class="denied__wrapper">
+    <h1>404</h1>
+    <h3>
+        LOST IN <span>SPACE</span> {{config()->get('app.name')}}? Hmm, looks like that page doesn't
+        exist.
+    </h3>
+    <img id="astronaut" src="{{asset('assets/images/astronaut.svg')}}" />
+    <img id="planet" src="{{asset('assets/images/planet.svg')}}" />
+    <a href="{{route('home')}}"><button class="denied__link">Go Home</button></a>
+</div>
 
-                        <div class="contant_box_404 justify-content-center">
-                            <h3 class="h2">
-                                Look like you're lost
-                            </h3>
-
-                            <p>the page you are looking for is not available!</p>
-
-                            <a href="#" class="link_404">Go to Home</a>
-                            <!-- Replace '#' with the actual URL you want to link to -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"
+></script>
+<script type="text/javascript" src="{{asset('assets/js/404.js')}}"></script>
 </body>
-
 </html>

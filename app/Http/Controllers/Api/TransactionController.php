@@ -16,7 +16,16 @@ class TransactionController extends Controller
 {
     public function prosesTransaksi(Request $request)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'uid' => 'required',
+            'qty' => 'required|numeric',
+            'product_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($this->generateErrorResponse("ID Belum Terdaftar atau Jumlah Barang Tidak Valid"));
+        }
+
         $uid = $request->input('uid');
         $qty_barang = $request->input('qty');
 

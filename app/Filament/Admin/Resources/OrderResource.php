@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use select;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Order;
@@ -14,12 +15,11 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use App\Models\States\OrderStatus\Failed;
 use App\Models\States\OrderStatus\Success;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Admin\Resources\OrderResource\Pages;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers;
-use Filament\Infolists\Components\Card;
-use Filament\Infolists\Components\Section;
 
 class OrderResource extends Resource
 {
@@ -47,14 +47,13 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\select::make('customer_id')
+            ->schema([Forms\Components\Select::make('customer_id')
                     ->label('Customer')
                     ->relationship('customer', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\select::make('product_id')
+            Forms\Components\Select::make('product_id')
                     ->label('Product')
                     ->relationship('product', 'name')
             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
@@ -73,12 +72,12 @@ class OrderResource extends Resource
                     ->default(0)
                     ->numeric()
                     ->reactive()
-            ->afterStateUpdated(
-                function (Get $get, Set $set, ?string $state) {
-                    if ($state <= 0) {
-                        return $set('total', $get('price'));
-                    }
-                    $set('total', $state * $get('price'));
+                ->afterStateUpdated(
+                    function (Get $get, Set $set, ?string $state) {
+                        if ($state <= 0) {
+                            return $set('total', $get('price'));
+                        }
+                        $set('total', $state * $get('price'));
                     }
                     )
                     ->required(),
@@ -125,7 +124,8 @@ class OrderResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([Tables\Actions\ViewAction::make(),
+            ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->groupedbulkActions([
@@ -145,8 +145,8 @@ class OrderResource extends Resource
                     TextEntry::make('product.name')->label('Product'),
                     TextEntry::make('product.category.name')->label('Category'),
                     TextEntry::make('status')
-                    ->label('Status')
-                    ->badge()
+                        ->label('Status')
+                        ->badge()
                         ->color(fn (string $state): string => match ($state) {
                             Success::$name => 'success',
                             Failed::$name => 'danger',

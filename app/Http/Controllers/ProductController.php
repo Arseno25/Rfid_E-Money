@@ -18,10 +18,11 @@ class ProductController extends Controller
     {
         $search = $request->input('query');
 
-        $product = Product::where('name', 'like', "%" . $search . "%")
+        $product = Product::where('name', 'like', '%' . $search . '%')
             ->where('stock', '>', 0)
             ->where('is_enabled', 1)
             ->paginate(10);
-        return view('products', ['product' => $product], compact('search'));
+
+        return view('products', compact('search', 'product'));
     }
 }

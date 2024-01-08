@@ -7,10 +7,12 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\States\Status\Inactive;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Filament\Notifications\Notification;
 
 class TransactionController extends Controller
 {
@@ -80,16 +82,23 @@ class TransactionController extends Controller
         DB::beginTransaction();
 
         try {
-            // Kurangi stok produk
-            $product->decrement('stock', $qty_barang);
+            if ($product->stock <= 0 || !$product->is_enabled) {
+                DB::rollback();
+                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                $response = "Produk tidak tersedia";
+                return response()->json($this->generateErrorResponse($response));
+            }
 
+            $product->decrement('stock', $qty_barang);
+            
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
 
             if ($saldo_setelah_transaksi <= 0) {
                 DB::rollback();
                 $this->saveOrder($user, $product, $qty_barang, 'failed');
-                return response()->json($this->generateErrorResponse("Saldo Tidak Cukup"));
+                $response = "Saldo Tidak Cukup";
+                return response()->json($this->generateErrorResponse($response));
             }
 
             $user->balance = $saldo_setelah_transaksi;
@@ -128,13 +137,14 @@ class TransactionController extends Controller
         }
     }
 
-    private function saveOrder($user, $product, $qty_barang, $status)
+    private function saveOrder($user, $product, $qty_barang, $status, $response)
     {
         $transaksi = new Order([
             'customer_id' => $user->id,
             'product_id' => $product->id,
             'quantity' => $qty_barang,
             'status' => $status,
+            'respons' => $response,
             'price' => $product->price,
             'total' => $product->price * $qty_barang,
         ]);

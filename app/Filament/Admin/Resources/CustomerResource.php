@@ -48,6 +48,7 @@ class CustomerResource extends Resource
                     ->label('Status')
                     ->searchable()
                     ->preload()
+                ->default(Active::$name)
                     ->options([
                         Active::$name => Active::$name,
                         Inactive::$name => Inactive::$name

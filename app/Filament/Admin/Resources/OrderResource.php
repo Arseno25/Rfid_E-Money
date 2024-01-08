@@ -2,20 +2,24 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\OrderResource\Pages;
-use App\Filament\Admin\Resources\OrderResource\RelationManagers;
+use Filament\Forms;
+use Filament\Tables;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\States\OrderStatus\Failed;
-use App\Models\States\OrderStatus\Success;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use App\Models\States\OrderStatus\Failed;
+use App\Models\States\OrderStatus\Success;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers;
+use Filament\Infolists\Components\Card;
+use Filament\Infolists\Components\Section;
 
 class OrderResource extends Resource
 {
@@ -53,7 +57,7 @@ class OrderResource extends Resource
                 Forms\Components\select::make('product_id')
                     ->label('Product')
                     ->relationship('product', 'name')
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state){
+            ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                         if ($state !== null) {
                             $product = Product::find($state);
                             return $set('price', $product->price) ?? $set('total', $product->price);
@@ -69,11 +73,12 @@ class OrderResource extends Resource
                     ->default(0)
                     ->numeric()
                     ->reactive()
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state){
-                     if ($state <= 0) {
-                         return $set('total', $get('price'));
-                     }
-                         $set('total', $state * $get('price'));
+            ->afterStateUpdated(
+                function (Get $get, Set $set, ?string $state) {
+                    if ($state <= 0) {
+                        return $set('total', $get('price'));
+                    }
+                    $set('total', $state * $get('price'));
                     }
                     )
                     ->required(),
@@ -120,11 +125,40 @@ class OrderResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->actions([Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->groupedbulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Invoices')
+                ->icon('heroicon-m-shopping-bag')
+                ->schema([
+                    TextEntry::make('customer.name')->label('Name'),
+                    TextEntry::make('customer.uid')->label('UID'),
+                    TextEntry::make('product.name')->label('Product'),
+                    TextEntry::make('product.category.name')->label('Category'),
+                    TextEntry::make('status')
+                    ->label('Status')
+                    ->badge()
+                        ->color(fn (string $state): string => match ($state) {
+                            Success::$name => 'success',
+                            Failed::$name => 'danger',
+                            default => 'primary',
+                        }),
+                    TextEntry::make('quantity')->label('Quantity'),
+                    TextEntry::make('price')->label('Price')->prefix('Rp. '),
+                    TextEntry::make('total')->label('Total')->prefix('Rp. '),
+                    TextEntry::make('created_at')->label('Payment Time')->dateTime(),
+                ])
+                    ->columns(3)
+                    ->compact(),
             ]);
     }
 
@@ -139,8 +173,8 @@ class OrderResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\OrderResource\Pages\ListOrders::route('/'),
-//            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
-//            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
+            //            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
+            //            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }

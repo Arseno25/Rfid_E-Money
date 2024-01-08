@@ -2,6 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use select;
 use Filament\Forms;
 use Filament\Tables;
@@ -108,6 +111,10 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->icon(fn(string $state): string => match ($state) {
+                        Success::$name => 'heroicon-o-check',
+                        Failed::$name => 'heroicon-o-x-mark',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         Success::$name => 'success',
                         Failed::$name => 'danger',
@@ -117,14 +124,21 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
                 Tables\Columns\TextColumn::make('price')
+                    ->prefix('Rp. ')
                     ->label('Price'),
                 Tables\Columns\TextColumn::make('total')
+                    ->prefix('Rp. ')
                     ->label('Total'),
             ])
             ->filters([
                 //
             ])
             ->actions([Tables\Actions\ViewAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ])->color('success')->label('Export Exel'),
             ])
             ->groupedbulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

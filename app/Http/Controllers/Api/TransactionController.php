@@ -7,6 +7,9 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\States\Status\Inactive;
+use App\Models\User;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -40,6 +43,8 @@ class TransactionController extends Controller
         if (!$user || $user->status == Inactive::$name) {
             return response()->json($this->generateErrorResponse("ID Belum Terdaftar"));
         }
+
+
 
         // Mendapatkan data produk
         $product = Product::find($request->input('product_id'));
@@ -85,7 +90,13 @@ class TransactionController extends Controller
                 $this->saveOrder($user, $product, $qty_barang, 'failed');
                 return response()->json($this->generateErrorResponse("Produk tidak tersedia"));
             }
-            
+
+            if ($qty_barang > $product->stock) {
+                DB::rollback();
+                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                return response()->json($this->generateErrorResponse("Jumlah melebihi stok"));
+            }
+
             $product->decrement('stock', $qty_barang);
 
             // Update saldo user
@@ -114,6 +125,18 @@ class TransactionController extends Controller
 
             DB::commit();
 
+            // Kirim notifikasi
+            Notification::make()
+                ->title('Transaksi Berhasil')
+                ->success()
+                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' jumlah pembelian ' . $qty_barang . ' Pcs' .' dengan total harga sebesar Rp.' . $product->price * $qty_barang)
+                ->actions([
+                    Action::make('Read')
+                        ->markAsRead(),
+                ])
+                ->send()
+                ->sendToDatabase(User::where('is_admin', 1)->get());
+
             return response()->json([
                 "Detail" => [
                     "Status" => "Transaksi Sukses",
@@ -125,9 +148,9 @@ class TransactionController extends Controller
             ]);
         } catch (QueryException $e) {
             DB::rollback();
-
             // Simpan data transaksi ke dalam tabel dengan status 'failed'
             $this->saveOrder($user, $product, $qty_barang, 'failed');
+
 
             return response()->json($this->generateErrorResponse("Terjadi Kesalahan"));
         }

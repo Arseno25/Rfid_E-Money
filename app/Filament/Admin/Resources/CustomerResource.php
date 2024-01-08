@@ -42,6 +42,7 @@ class CustomerResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('balance')
                     ->label('Balance')
+                    ->prefix('Rp. ')
                     ->numeric()
                     ->required(),
                 Forms\Components\Select::make('status')

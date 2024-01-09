@@ -137,7 +137,7 @@ class OrderResource extends Resource
             ])
             ->headerActions([
                 ExportAction::make()->exports([
-                    ExcelExport::make('table')->fromTable(),
+                    ExcelExport::make('table')->fromTable()->withFilename(date('Y-m-d') . ' - export'),
                 ])->color('success')->label('Export Exel'),
             ])
             ->groupedbulkActions([

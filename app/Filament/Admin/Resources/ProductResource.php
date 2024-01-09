@@ -117,8 +117,8 @@ class ProductResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\ProductResource\Pages\ListProducts::route('/'),
-            'create' => \App\Filament\Admin\Resources\ProductResource\Pages\CreateProduct::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\ProductResource\Pages\EditProduct::route('/{record}/edit'),
+//            'create' => \App\Filament\Admin\Resources\ProductResource\Pages\CreateProduct::route('/create'),
+//            'edit' => \App\Filament\Admin\Resources\ProductResource\Pages\EditProduct::route('/{record}/edit'),
         ];
     }
 }

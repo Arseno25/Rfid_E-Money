@@ -63,6 +63,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label('ID')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                 ->label('Name')
                 ->searchable(),

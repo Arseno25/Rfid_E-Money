@@ -7,14 +7,28 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\States\Status\Inactive;
+use App\Models\User;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
     public function prosesTransaksi(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'uid' => 'required',
+            'qty' => 'required|numeric',
+            'product_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($this->generateErrorResponse("ID Belum Terdaftar atau Jumlah Barang Tidak Valid"));
+        }
+
         $uid = $request->input('uid');
         $qty_barang = $request->input('qty');
 
@@ -29,6 +43,8 @@ class TransactionController extends Controller
         if (!$user || $user->status == Inactive::$name) {
             return response()->json($this->generateErrorResponse("ID Belum Terdaftar"));
         }
+
+
 
         // Mendapatkan data produk
         $product = Product::find($request->input('product_id'));
@@ -69,13 +85,24 @@ class TransactionController extends Controller
         DB::beginTransaction();
 
         try {
-            // Kurangi stok produk
+            if ($product->stock <= 0 || !$product->is_enabled) {
+                DB::rollback();
+                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                return response()->json($this->generateErrorResponse("Produk tidak tersedia"));
+            }
+
+            if ($qty_barang > $product->stock) {
+                DB::rollback();
+                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                return response()->json($this->generateErrorResponse("Jumlah melebihi stok"));
+            }
+
             $product->decrement('stock', $qty_barang);
 
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
 
-            if ($saldo_setelah_transaksi < 0) {
+            if ($saldo_setelah_transaksi <= 0) {
                 DB::rollback();
                 $this->saveOrder($user, $product, $qty_barang, 'failed');
                 return response()->json($this->generateErrorResponse("Saldo Tidak Cukup"));
@@ -84,7 +111,7 @@ class TransactionController extends Controller
             $user->balance = $saldo_setelah_transaksi;
             $user->save();
 
-            if ($product->stock == 0) {
+            if ($product->stock <= 0) {
                 $product->update(['is_enabled' => 0]);
             }
 
@@ -92,11 +119,23 @@ class TransactionController extends Controller
             $this->saveOrder($user, $product, $qty_barang, 'success');
 
             // Berikan 3 poin kepada pengguna setiap 10.000 rupiah transaksi
-            $jumlah_poin = floor(($product->price * $qty_barang) / 10000) * 3;
+            $jumlah_poin = (int) floor(($product->price * $qty_barang) / 10000) * 3;
             $user->point += $jumlah_poin;
             $user->save();
 
             DB::commit();
+
+            // Kirim notifikasi
+            Notification::make()
+                ->title('Transaksi Berhasil')
+                ->success()
+                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' jumlah pembelian ' . $qty_barang . ' Pcs' .' dengan total harga sebesar Rp.' . $product->price * $qty_barang)
+                ->actions([
+                    Action::make('Read')
+                        ->markAsRead(),
+                ])
+                ->send()
+                ->sendToDatabase(User::where('is_admin', 1)->get());
 
             return response()->json([
                 "Detail" => [
@@ -109,24 +148,24 @@ class TransactionController extends Controller
             ]);
         } catch (QueryException $e) {
             DB::rollback();
-
             // Simpan data transaksi ke dalam tabel dengan status 'failed'
             $this->saveOrder($user, $product, $qty_barang, 'failed');
+
 
             return response()->json($this->generateErrorResponse("Terjadi Kesalahan"));
         }
     }
 
     private function saveOrder($user, $product, $qty_barang, $status)
-    {
-        $transaksi = new Order([
-            'customer_id' => $user->id,
-            'product_id' => $product->id,
-            'quantity' => $qty_barang,
-            'status' => $status,
-            'price' => $product->price,
-            'total' => $product->price * $qty_barang,
-        ]);
-        $transaksi->save();
-    }
+{
+    $transaksi = new Order([
+        'customer_id' => $user->id,
+        'product_id' => $product->id,
+        'quantity' => $qty_barang,
+        'status' => $status,
+        'price' => $product->price,
+        'total' => $product->price * $qty_barang,
+    ]);
+    $transaksi->save();
+}
 }

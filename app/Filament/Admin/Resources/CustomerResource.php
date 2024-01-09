@@ -24,7 +24,7 @@ class CustomerResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'phone', 'uid'];
+        return ['name', 'phone', 'uid'];
     }
 
     public static function form(Form $form): Form
@@ -42,12 +42,14 @@ class CustomerResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('balance')
                     ->label('Balance')
+                    ->prefix('Rp. ')
                     ->numeric()
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->searchable()
                     ->preload()
+                ->default(Active::$name)
                     ->options([
                         Active::$name => Active::$name,
                         Inactive::$name => Inactive::$name

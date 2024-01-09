@@ -2,20 +2,27 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\OrderResource\Pages;
-use App\Filament\Admin\Resources\OrderResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use select;
+use Filament\Forms;
+use Filament\Tables;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\States\OrderStatus\Failed;
-use App\Models\States\OrderStatus\Success;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use App\Models\States\OrderStatus\Failed;
+use App\Models\States\OrderStatus\Success;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers;
 
 class OrderResource extends Resource
 {
@@ -37,23 +44,22 @@ class OrderResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['customer.full_name','price'];
+        return ['customer.name', 'price'];
     }
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\select::make('customer_id')
+            ->schema([Forms\Components\Select::make('customer_id')
                     ->label('Customer')
                     ->relationship('customer', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\select::make('product_id')
+            Forms\Components\Select::make('product_id')
                     ->label('Product')
                     ->relationship('product', 'name')
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state){
+            ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                         if ($state !== null) {
                             $product = Product::find($state);
                             return $set('price', $product->price) ?? $set('total', $product->price);
@@ -69,11 +75,12 @@ class OrderResource extends Resource
                     ->default(0)
                     ->numeric()
                     ->reactive()
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state){
-                     if ($state <= 0) {
-                         return $set('total', $get('price'));
-                     }
-                         $set('total', $state * $get('price'));
+                ->afterStateUpdated(
+                    function (Get $get, Set $set, ?string $state) {
+                        if ($state <= 0) {
+                            return $set('total', $get('price'));
+                        }
+                        $set('total', $state * $get('price'));
                     }
                     )
                     ->required(),
@@ -104,6 +111,10 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->icon(fn(string $state): string => match ($state) {
+                        Success::$name => 'heroicon-o-check',
+                        Failed::$name => 'heroicon-o-x-mark',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         Success::$name => 'success',
                         Failed::$name => 'danger',
@@ -113,18 +124,53 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
                 Tables\Columns\TextColumn::make('price')
+                    ->prefix('Rp. ')
                     ->label('Price'),
                 Tables\Columns\TextColumn::make('total')
+                    ->prefix('Rp. ')
                     ->label('Total'),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\DeleteAction::make(),
+            ->actions([Tables\Actions\ViewAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ])->color('success')->label('Export Exel'),
             ])
             ->groupedbulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Invoices')
+                ->icon('heroicon-m-shopping-bag')
+                ->schema([
+                    TextEntry::make('customer.name')->label('Name'),
+                    TextEntry::make('customer.uid')->label('UID'),
+                    TextEntry::make('product.name')->label('Product'),
+                    TextEntry::make('product.category.name')->label('Category'),
+                    TextEntry::make('status')
+                        ->label('Status')
+                        ->badge()
+                        ->color(fn (string $state): string => match ($state) {
+                            Success::$name => 'success',
+                            Failed::$name => 'danger',
+                            default => 'primary',
+                        }),
+                    TextEntry::make('quantity')->label('Quantity'),
+                    TextEntry::make('price')->label('Price')->prefix('Rp. '),
+                    TextEntry::make('total')->label('Total')->prefix('Rp. '),
+                    TextEntry::make('created_at')->label('Payment Time')->dateTime(),
+                ])
+                    ->columns(3)
+                    ->compact(),
             ]);
     }
 
@@ -139,8 +185,8 @@ class OrderResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\OrderResource\Pages\ListOrders::route('/'),
-//            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
-//            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
+            //            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
+            //            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }

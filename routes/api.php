@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/proses-transaksi', [App\Http\Controllers\Api\TransactionController::class, 'prosesTransaksi']);
+Route::get('/proses-transaksi', [App\Http\Controllers\Api\TransactionController::class, 'prosesTransaksi']);

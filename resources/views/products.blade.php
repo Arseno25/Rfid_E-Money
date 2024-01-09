@@ -25,7 +25,7 @@
                 @if ($item->is_enabled == 1)
                     <div class="{{ $item->stock > 0 ? 'w-full' : 'disabled opacity-70' }} max-w-sm mx-auto rounded-md shadow-md overflow-hidden relative">
                         <div class="flex items-end justify-end h-56 w-full bg-cover bg-no-repeat overflow-hidden bg-gray-300 relative">
-                            <div class="absolute top-[-5px] right-0 bg-sky-500 py-1 px-10 opacity-80 drop-shadow-md rounded-l-md">
+                            <div class="absolute top-[-5px] right-0 bg-sky-500 py-1 px-10 z-10 opacity-80 drop-shadow-md rounded-l-md">
                                 <span class="text-white font-12">Stock: {{ $item->stock }}</span>
                             </div>
                             @if ($item->getFirstMediaUrl('product_image'))

@@ -15,6 +15,7 @@ class Order extends Model
         'quantity',
         'status',
         'price',
+        'discount_amount',
         'total',
     ];
 
@@ -31,5 +32,10 @@ class Order extends Model
     public function category() : BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function discount() : BelongsTo
+    {
+        return $this->belongsTo(Discount::class);
     }
 }

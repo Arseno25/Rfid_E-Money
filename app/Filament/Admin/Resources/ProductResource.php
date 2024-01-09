@@ -55,6 +55,7 @@ class ProductResource extends Resource
                 Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                 ->label('Image')
                     ->collection('product_image')
+                    ->optimize('webp')
                 ->columnSpanFull(),
             ]);
     }

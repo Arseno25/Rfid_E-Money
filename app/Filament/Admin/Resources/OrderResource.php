@@ -5,13 +5,9 @@ namespace App\Filament\Admin\Resources;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
-use select;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Order;
-use App\Models\Product;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
@@ -50,49 +46,8 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([Forms\Components\Select::make('customer_id')
-                    ->label('Customer')
-                    ->relationship('customer', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-            Forms\Components\Select::make('product_id')
-                    ->label('Product')
-                    ->relationship('product', 'name')
-            ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                        if ($state !== null) {
-                            $product = Product::find($state);
-                            return $set('price', $product->price) ?? $set('total', $product->price);
-                        }
-                        return $set('total', null) ?? $set('price', null);
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->reactive()
-                    ->required(),
-                Forms\Components\TextInput::make('quantity')
-                    ->label('Quantity')
-                    ->default(0)
-                    ->numeric()
-                    ->reactive()
-                ->afterStateUpdated(
-                    function (Get $get, Set $set, ?string $state) {
-                        if ($state <= 0) {
-                            return $set('total', $get('price'));
-                        }
-                        $set('total', $state * $get('price'));
-                    }
-                    )
-                    ->required(),
-                Forms\Components\TextInput::make('price')
-                    ->label('Price')
-                    ->reactive()
-                    ->afterStateUpdated(fn (Get $get, Set $set, ?string $state) => $set('total', $state))
-                    ->required(),
-                Forms\Components\TextInput::make('total')
-                    ->readOnly()
-                    ->label('Total')
-                    ->reactive(),
+            ->schema([
+                //
             ]);
     }
 
@@ -126,6 +81,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->prefix('Rp. ')
                     ->label('Price'),
+                Tables\Columns\TextColumn::make('discount_amount')
+                    ->label('Discount')
+                    ->prefix('-Rp. '),
                 Tables\Columns\TextColumn::make('total')
                     ->prefix('Rp. ')
                     ->label('Total'),
@@ -166,6 +124,7 @@ class OrderResource extends Resource
                         }),
                     TextEntry::make('quantity')->label('Quantity'),
                     TextEntry::make('price')->label('Price')->prefix('Rp. '),
+                    TextEntry::make('discount_amount')->label('Discount')->prefix('-Rp. '),
                     TextEntry::make('total')->label('Total')->prefix('Rp. '),
                     TextEntry::make('created_at')->label('Payment Time')->dateTime('D, d M Y H:i:s'),
                 ])

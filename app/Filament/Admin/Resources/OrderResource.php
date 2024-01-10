@@ -127,6 +127,7 @@ class OrderResource extends Resource
                         }),
                     TextEntry::make('quantity')->label('Quantity'),
                     TextEntry::make('price')->label('Price')->prefix('Rp. '),
+                    TextEntry::make('price_before_discount')->label('Total Before Discount')->prefix('Rp. '),
                     TextEntry::make('discount_amount')->label('Discount')->prefix('-Rp. '),
                     TextEntry::make('total')->label('Total')->prefix('Rp. '),
                     TextEntry::make('created_at')->label('Payment Time')->dateTime('D, d M Y H:i:s'),

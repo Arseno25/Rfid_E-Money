@@ -32,8 +32,8 @@ class StatsOverview extends BaseWidget
             Stat::make('Total Customers', Customer::count()),
             Stat::make('Total Product', Product::count()),
             Stat::make('Discount Active', Discount::where('status', 'active')->count()),
-            Stat::make('Total Transaksi', $totalSum)
-            ->description('Total Transaksi')
+            Stat::make('Total Amount Transaksi', $totalSum)
+            ->description('Total Amount Transaksi')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
             ->chart($chartData)
                 ->color('success'),

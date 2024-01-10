@@ -81,6 +81,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->prefix('Rp. ')
                     ->label('Price'),
+                Tables\Columns\TextColumn::make('price_before_discount')
+                    ->prefix('Rp. ')
+                    ->label('Total Before Discount'),
                 Tables\Columns\TextColumn::make('discount_amount')
                     ->label('Discount')
                     ->prefix('-Rp. '),

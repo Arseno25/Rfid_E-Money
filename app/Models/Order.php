@@ -15,6 +15,7 @@ class Order extends Model
         'quantity',
         'status',
         'price',
+        'price_before_discount',
         'discount_amount',
         'total',
     ];

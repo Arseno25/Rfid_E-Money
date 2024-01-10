@@ -59,6 +59,7 @@ class DiscountResource extends Resource
                     ->label('Percentage')
                     ->searchable()
                 ->suffix('%'),
+
                 Tables\Columns\IconColumn::make('status')
                     ->label('Status')
                     ->icon(fn (string $state): string => match ($state) {

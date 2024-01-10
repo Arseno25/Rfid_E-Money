@@ -146,7 +146,7 @@ class TransactionController extends Controller
             Notification::make()
                 ->title('Transaksi Berhasil')
                 ->success()
-                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' jumlah pembelian ' . $qty_barang . ' Pcs'. ' total yang dibayarkan sebesar Rp.' . $product->price * $qty_barang - $discount_amount. '.')
+                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' dengan jumlah pembelian ' . $qty_barang . ' Pcs'. ' total yang dibayarkan sebesar Rp.' . $product->price * $qty_barang - $discount_amount. '.')
                 ->actions([
                     Action::make('Read')
                         ->markAsRead(),
@@ -182,6 +182,7 @@ class TransactionController extends Controller
             'quantity' => $qty_barang,
             'status' => $status,
             'price' => $product->price,
+            'price_before_discount' => $product->price * $qty_barang,
             'discount_amount' => $discount_amount ? $discount_amount : 0, // Menambah kolom discount_amount
             'total' => $product->price * $qty_barang - $discount_amount, // Mengurangkan discount_amount dari total
         ]);

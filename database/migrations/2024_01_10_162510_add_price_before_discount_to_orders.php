@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('price_before_discount', 10, 2)->after('price');
+            $table->integer('price_before_discount')->after('price');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('price_before_discount', 10, 2)->after('price');
+            $table->integer('price_before_discount')->after('price');
         });
     }
 };

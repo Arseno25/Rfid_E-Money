@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Discount;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\States\Status\Inactive;
@@ -14,6 +15,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+
 
 class TransactionController extends Controller
 {
@@ -85,15 +87,23 @@ class TransactionController extends Controller
         DB::beginTransaction();
 
         try {
+            // Pemeriksaan keberadaan diskon aktif
+            $discount = Discount::where('status', 'active')->first();
+            $discount_amount = 0;
+
+            if ($discount) {
+                $discount_amount = ($product->price * $qty_barang) * ($discount->percentage / 100);
+            }
+
             if ($product->stock <= 0 || !$product->is_enabled) {
                 DB::rollback();
-                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                $this->saveOrder($user, $product, $qty_barang, 'failed', $discount_amount);
                 return response()->json($this->generateErrorResponse("Produk tidak tersedia"));
             }
 
             if ($qty_barang > $product->stock) {
                 DB::rollback();
-                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                $this->saveOrder($user, $product, $qty_barang, 'failed', $discount_amount);
                 return response()->json($this->generateErrorResponse("Jumlah melebihi stok"));
             }
 
@@ -102,13 +112,14 @@ class TransactionController extends Controller
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
 
-            if ($saldo_setelah_transaksi <= 0) {
+            if ($saldo_setelah_transaksi < 0) {
                 DB::rollback();
-                $this->saveOrder($user, $product, $qty_barang, 'failed');
+                $this->saveOrder($user, $product, $qty_barang, 'failed', $discount_amount);
                 return response()->json($this->generateErrorResponse("Saldo Tidak Cukup"));
             }
 
-            $user->balance = $saldo_setelah_transaksi;
+            // Potong saldo dengan atau tanpa diskon
+            $user->balance = $saldo_setelah_transaksi - $discount_amount;
             $user->save();
 
             if ($product->stock <= 0) {
@@ -116,7 +127,13 @@ class TransactionController extends Controller
             }
 
             // Simpan data transaksi ke dalam tabel dengan status 'success'
-            $this->saveOrder($user, $product, $qty_barang, 'success');
+            $this->saveOrder($user, $product, $qty_barang, 'success', $discount_amount);
+
+            // Discount
+            if ($discount) {
+                $user->balance -= $discount_amount;
+                $user->save();
+            }
 
             // Berikan 3 poin kepada pengguna setiap 10.000 rupiah transaksi
             $jumlah_poin = (int) floor(($product->price * $qty_barang) / 10000) * 3;
@@ -129,7 +146,7 @@ class TransactionController extends Controller
             Notification::make()
                 ->title('Transaksi Berhasil')
                 ->success()
-                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' jumlah pembelian ' . $qty_barang . ' Pcs' .' dengan total harga sebesar Rp.' . $product->price * $qty_barang)
+                ->body($user->name . ' Telah melakukan transaksi untuk produk '. $product->name . ' dengan jumlah pembelian ' . $qty_barang . ' Pcs'. ' total yang dibayarkan sebesar Rp.' . $product->price * $qty_barang - $discount_amount. '.')
                 ->actions([
                     Action::make('Read')
                         ->markAsRead(),
@@ -141,7 +158,10 @@ class TransactionController extends Controller
                 "Detail" => [
                     "Status" => "Transaksi Sukses",
                     "Data User" => $user,
+                    "Diskon" => $discount ? $discount->percentage . '%' : 'Tidak ada diskon',
                     "Total Harga" => 'Rp.' . ($product->price * $qty_barang),
+                    "Total Diskon" => 'Rp.' . $discount_amount,
+                    "Total Bayar" => 'Rp.' . ($product->price * $qty_barang - $discount_amount),
                     "Saldo Akhir" => 'Rp.' . (int)$user->balance,
                     "Total Poin" => (int)$user->point . ' poin',
                 ],
@@ -149,23 +169,23 @@ class TransactionController extends Controller
         } catch (QueryException $e) {
             DB::rollback();
             // Simpan data transaksi ke dalam tabel dengan status 'failed'
-            $this->saveOrder($user, $product, $qty_barang, 'failed');
-
-
+            $this->saveOrder($user, $product, $qty_barang, 'failed', $discount_amount);
             return response()->json($this->generateErrorResponse("Terjadi Kesalahan"));
         }
     }
 
-    private function saveOrder($user, $product, $qty_barang, $status)
-{
-    $transaksi = new Order([
-        'customer_id' => $user->id,
-        'product_id' => $product->id,
-        'quantity' => $qty_barang,
-        'status' => $status,
-        'price' => $product->price,
-        'total' => $product->price * $qty_barang,
-    ]);
-    $transaksi->save();
-}
+    private function saveOrder($user, $product, $qty_barang, $status, $discount_amount)
+    {
+        $transaksi = new Order([
+            'customer_id' => $user->id,
+            'product_id' => $product->id,
+            'quantity' => $qty_barang,
+            'status' => $status,
+            'price' => $product->price,
+            'price_before_discount' => $product->price * $qty_barang,
+            'discount_amount' => $discount_amount ? $discount_amount : 0, // Menambah kolom discount_amount
+            'total' => $product->price * $qty_barang - $discount_amount, // Mengurangkan discount_amount dari total
+        ]);
+        $transaksi->save();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Models\Discount;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Customer;
@@ -11,7 +12,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsOverview extends BaseWidget
 {
-    protected static ?string $pollingInterval = null;
+    protected static ?string $pollingInterval = '10s';
 
     protected function getStats(): array
     {
@@ -30,8 +31,9 @@ class StatsOverview extends BaseWidget
         return [
             Stat::make('Total Customers', Customer::count()),
             Stat::make('Total Product', Product::count()),
-            Stat::make('Total Transaksi', $totalSum)
-            ->description('Total Transaksi')
+            Stat::make('Discount Active', Discount::where('status', 'active')->count()),
+            Stat::make('Total Amount Transaksi', $totalSum)
+            ->description('Total Amount Transaksi')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
             ->chart($chartData)
                 ->color('success'),

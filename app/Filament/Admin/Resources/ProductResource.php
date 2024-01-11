@@ -55,6 +55,7 @@ class ProductResource extends Resource
                 Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                 ->label('Image')
                     ->collection('product_image')
+                    ->optimize('webp')
                 ->columnSpanFull(),
             ]);
     }
@@ -63,6 +64,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label('ID')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                 ->label('Name')
                 ->searchable(),
@@ -117,8 +121,8 @@ class ProductResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\ProductResource\Pages\ListProducts::route('/'),
-            'create' => \App\Filament\Admin\Resources\ProductResource\Pages\CreateProduct::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\ProductResource\Pages\EditProduct::route('/{record}/edit'),
+//            'create' => \App\Filament\Admin\Resources\ProductResource\Pages\CreateProduct::route('/create'),
+//            'edit' => \App\Filament\Admin\Resources\ProductResource\Pages\EditProduct::route('/{record}/edit'),
         ];
     }
 }

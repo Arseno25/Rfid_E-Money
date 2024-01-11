@@ -25,4 +25,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -p 2223 senx6477@${{ secrets.SERVER_IP }} 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh
+          ssh -i ~/.ssh/arseno_server_key -p 2223 senx6477@${{ secrets.SERVER_IP }} 'bash -s' < "${{ github.workspace }}/.github/workflows/deploy.sh"

@@ -28,4 +28,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/arseno_server_key syncflux@103.247.11.122 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh
+          ssh syncflux@103.247.11.122 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh

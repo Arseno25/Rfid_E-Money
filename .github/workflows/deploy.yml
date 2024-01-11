@@ -22,4 +22,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -p 2223 senx6477@${{ secrets.SERVER_IP }} '-p 2223 bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh
+          ssh -p 2223 senx6477@${{ secrets.SERVER_IP }} 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh

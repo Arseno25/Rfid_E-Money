@@ -84,11 +84,6 @@ class CustomerResource extends Resource
                     'active' => 'success',
                     'inactive' => 'danger',
                 }),
-                Tables\Columns\TextColumn::make('point')
-                    ->label('Point')
-                    ->searchable()
-                    ->sortable(),
-
             ])
             ->filters([
                 //

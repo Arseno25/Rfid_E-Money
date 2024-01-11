@@ -25,4 +25,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh syncflux@${{ secrets.SERVER_IP }} 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh
+          ssh senx6477@${{ secrets.SERVER_IP }} 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh

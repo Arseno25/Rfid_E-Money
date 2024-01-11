@@ -9,7 +9,7 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    name: Build & Deploy Assets
+    name: Build & Deploy
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

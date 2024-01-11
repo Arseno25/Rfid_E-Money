@@ -11,25 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Build & Deploy Assets
     steps:
-
-      - name: Checkout
-  
+      - name: Checkout code
         uses: actions/checkout@v2
-  
-      - name: Deployment
-  
-        uses: appleboy/ssh-action@main
-  
-        with:
-  
-          host: ${{ secrets.SERVER_IP }}
-  
-          key: ${{ secrets.SSH_PUBLIC_KEY }}
-  
-          username: ${{ secrets.SSH_USERNAME }}
-  
-          script: |
-  
-            cd ~/dashboard-rfid
-  
-            git pull
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/arseno_server_key
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/arseno_server_key.pub
+          chmod 600 ~/.ssh/arseno_server_key
+          chmod 600 ~/.ssh/arseno_server_key.pub
+          ssh-keyscan -H senotekno.com >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          ssh syncflux@${{ secrets.SERVER_IP }} 'bash -s' < ${{ github.workspace }}/.github/workflows/deploy.sh

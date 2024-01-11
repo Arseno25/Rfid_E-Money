@@ -16,6 +16,7 @@ jobs:
 
       - name: Setup SSH
         run: |
+          rm -rf ~/.ssh/
           mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub

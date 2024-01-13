@@ -54,8 +54,7 @@ class ProductResource extends Resource
                     ->required(),
                 Forms\Components\Textarea::make('description')
                 ->label('Description')
-                    ->columnSpanFull()
-                ->required(),
+                    ->columnSpanFull(),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                 ->label('Image')
                     ->collection('product_image')

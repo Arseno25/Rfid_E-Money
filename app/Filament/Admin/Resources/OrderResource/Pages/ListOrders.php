@@ -11,6 +11,11 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
+    protected function getTablePollingInterval(): ?string
+    {
+        return '5s';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

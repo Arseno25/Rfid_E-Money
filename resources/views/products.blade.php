@@ -40,7 +40,7 @@
                             <p class="mb-2 text-base dark:text-gray-300 text-gray-700">{{ $item->description }}</p>
                             <div class="flex items-center">
                                 <p class="mr-2 text-lg font-semibold text-gray-900 dark:text-white">{{ formatCurrency($item->price - ($item->price * $discount->percentage / 100)) }}</p>
-                                <p class="text-base  font-medium text-gray-500 line-through dark:text-gray-300">{{ formatCurrency($item->price) }}</p>
+                                <p class="text-base font-medium text-gray-500 line-through dark:text-gray-300">{{ formatCurrency($item->price) }}</p>
                                 <p class="ml-auto text-base font-medium text-green-500">{{ $discount->percentage }}% off</p>
                             </div>
                         </div>

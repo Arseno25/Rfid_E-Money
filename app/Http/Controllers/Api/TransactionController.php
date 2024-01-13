@@ -135,11 +135,6 @@ class TransactionController extends Controller
                 $user->save();
             }
 
-            // Berikan 3 poin kepada pengguna setiap 10.000 rupiah transaksi
-            $jumlah_poin = (int) floor(($product->price * $qty_barang) / 10000) * 3;
-            $user->point += $jumlah_poin;
-            $user->save();
-
             DB::commit();
 
             // Kirim notifikasi

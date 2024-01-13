@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentBackgroundsPlugin::make()
                     ->showAttribution(false)
+                    ->remember(300)
                     ->imageProvider(
                         MyImages::make()
                             ->directory('images/cats')

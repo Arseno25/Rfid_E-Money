@@ -17,7 +17,7 @@ class TransactionChart extends ChartWidget
 
     public ?string $filter = 'today';
 
-    protected static ?string $pollingInterval = '10s';
+    protected static ?string $pollingInterval = '5s';
 
     protected function getFilters(): ?array
     {

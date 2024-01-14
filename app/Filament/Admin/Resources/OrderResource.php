@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\OrderResource\Widgets\OrderOverview;
+use AymanAlhattami\FilamentDateScopesFilter\DateScopeFilter;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -93,7 +94,7 @@ class OrderResource extends Resource
                     ->label('Total'),
             ])
             ->filters([
-                //
+                DateScopeFilter::make('created_at'),
             ])
             ->actions([Tables\Actions\ViewAction::make(),
             ])

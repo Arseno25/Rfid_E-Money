@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use AymanAlhattami\FilamentDateScopesFilter\DateScopeFilter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -88,12 +89,15 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('category.name')
                 ->label('Category')
                 ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                ->label('Description')
+                ->searchable(),
                 SpatieMediaLibraryImageColumn::make('image')
                 ->collection('product_image')
                 ->circular(),
             ])
             ->filters([
-                //
+                DateScopeFilter::make('created_at'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -24,6 +24,7 @@ use Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -52,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
 //                MaintenanceSwitchPlugin::make(),
             ])
             ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([

@@ -15,8 +15,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
-
 class TransactionController extends Controller
 {
     public function prosesTransaksi(Request $request)

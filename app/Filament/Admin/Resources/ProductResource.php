@@ -97,7 +97,8 @@ class ProductResource extends Resource
                 ->circular(),
             ])
             ->filters([
-                DateScopeFilter::make('created_at'),
+                DateScopeFilter::make('created_at')
+                ->label('Created At'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

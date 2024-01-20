@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filament\Admin\Resources\CustomerResource;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Discount;
@@ -52,7 +53,7 @@ class TransactionController extends Controller
         $product = Product::find($request->input('product_id'));
         if (!$product || $product->is_enabled == 0) {
             $error_response = $this->generateErrorResponse("Produk Tidak Ditemukan");
-            return response()->json($this->generateErrorResponse($error_response));
+            return response()->json($error_response);
         }
         // Memproses transaksi
         return $this->processTransaction($user, $product, $qty_barang);
@@ -84,7 +85,7 @@ class TransactionController extends Controller
         Notification::make()
             ->title('Transaksi Gagal')
             ->danger()
-            ->body('Terjadi kesalahan saat melakukan transaksi pelanggan atas nama '. (!empty($user->name) ? $user->name : '' . 'dengan UID ' . $user->uid) . ' dengan status: ' . $errorResponse['Detail']['Status'])
+            ->body('Terjadi kesalahan saat melakukan transaksi dengan pesan: ' . $errorResponse['Detail']['Status'])
             ->actions([
                 Action::make('Read')
                     ->markAsRead(),

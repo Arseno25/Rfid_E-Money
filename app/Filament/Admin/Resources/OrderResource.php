@@ -92,6 +92,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('total')
                     ->prefix('Rp. ')
                     ->label('Total'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime('d-M-Y H:i'),
             ])
             ->filters([
                 DateScopeFilter::make('created_at'),
@@ -127,6 +130,13 @@ class OrderResource extends Resource
                             Failed::$name => 'danger',
                             default => 'primary',
                         }),
+
+
+                    TextEntry::make('response')
+                        ->label('Response')
+                        ->color('danger')
+                        ->visible(fn (Order $record): bool => $record->status === Failed::$name),
+
                     TextEntry::make('quantity')->label('Quantity'),
                     TextEntry::make('price')->label('Price')->prefix('Rp. '),
                     TextEntry::make('price_before_discount')->label('Total Before Discount')->prefix('Rp. '),

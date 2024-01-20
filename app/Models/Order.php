@@ -15,10 +15,15 @@ class Order extends Model
         'product_id',
         'quantity',
         'status',
+        'response',
         'price',
         'price_before_discount',
         'discount_amount',
         'total',
+    ];
+
+    protected $casts = [
+        'response' => 'json',
     ];
 
     public function product() : BelongsTo

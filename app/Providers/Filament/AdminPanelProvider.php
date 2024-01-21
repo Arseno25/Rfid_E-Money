@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\OrderResource;
 use App\Http\Middleware\VerifyIsAdmin;
 use Awcodes\FilamentQuickCreate\QuickCreatePlugin;
 use Brickx\MaintenanceSwitch\MaintenanceSwitchPlugin;
@@ -49,7 +50,10 @@ class AdminPanelProvider extends PanelProvider
                             ->directory('images/cats')
                     ),
                 FilamentProgressbarPlugin::make()->color('#29b'),
-                QuickCreatePlugin::make(),
+                QuickCreatePlugin::make()
+                    ->excludes([
+                        OrderResource::class,
+                    ]),
 //                MaintenanceSwitchPlugin::make(),
             ])
             ->databaseNotifications()

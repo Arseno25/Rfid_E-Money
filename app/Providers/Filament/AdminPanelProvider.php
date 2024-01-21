@@ -53,7 +53,9 @@ class AdminPanelProvider extends PanelProvider
                 QuickCreatePlugin::make()
                     ->excludes([
                         OrderResource::class,
-                    ]),
+
+                    ])
+                    ->sortBy('navigation'),
 //                MaintenanceSwitchPlugin::make(),
             ])
             ->databaseNotifications()

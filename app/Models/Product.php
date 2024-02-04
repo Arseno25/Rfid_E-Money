@@ -8,16 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use LaracraftTech\LaravelDateScopes\DateScopes;
 
 class Product extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use DateScopes;
 
     protected $fillable = [
         'name',
         'price',
         'stock',
+        'description',
         'is_enabled',
         'category_id',
     ];
@@ -34,6 +37,11 @@ class Product extends Model implements HasMedia
     public function orders() : HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function discounts() : BelongsTo
+    {
+        return $this->belongsTo(Discount::class);
     }
 
     public function getCountAttribute(): int

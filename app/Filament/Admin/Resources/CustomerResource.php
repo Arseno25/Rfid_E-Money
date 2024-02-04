@@ -117,7 +117,7 @@ class CustomerResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\CustomerResource\Pages\ListCustomers::route('/'),
-//            'create' => \App\Filament\Admin\Resources\CustomerResource\Pages\CreateCustomer::route('/create'),
+            'create' => \App\Filament\Admin\Resources\CustomerResource\Pages\CreateCustomer::route('/create'),
 //            'edit' => \App\Filament\Admin\Resources\CustomerResource\Pages\EditCustomer::route('/{record}/edit'),
         ];
     }

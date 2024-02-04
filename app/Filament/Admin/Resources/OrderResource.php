@@ -141,7 +141,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\HttpLogRelationManager::class
         ];
     }
 
@@ -149,8 +149,9 @@ class OrderResource extends Resource
     {
         return [
             'index' => \App\Filament\Admin\Resources\OrderResource\Pages\ListOrders::route('/'),
-            //            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
-            //            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
+            'create' => \App\Filament\Admin\Resources\OrderResource\Pages\CreateOrder::route('/create'),
+            'edit' => \App\Filament\Admin\Resources\OrderResource\Pages\EditOrder::route('/{record}/edit'),
+            'view' => \App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder::route('/{record}'),
         ];
     }
 }

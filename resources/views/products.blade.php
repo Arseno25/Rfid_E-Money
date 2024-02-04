@@ -23,28 +23,16 @@
         <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6">
             @foreach ($product as $item)
                 @if ($item->is_enabled == 1)
-                    <div class="{{ $item->stock > 0 ? 'w-full' : 'disabled opacity-70' }} max-w-sm mx-auto rounded-md shadow-md overflow-hidden relative">
-                        <div class="flex items-end justify-end h-56 w-full bg-cover bg-no-repeat overflow-hidden bg-gray-300 relative">
-                            <div class="absolute top-[-5px] right-0 bg-sky-500 py-1 px-10 z-10 opacity-80 drop-shadow-md rounded-l-md">
-                                <span class="text-white font-12">Stock: {{ $item->stock }}</span>
+                    <div class="mx-auto mt-11 w-80 transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-md duration-300 hover:scale-105 hover:shadow-lg">
+                        <img class="h-48 w-full object-cover object-center" src="https://images.unsplash.com/photo-1674296115670-8f0e92b1fddb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="Product Image" />
+                        <div class="p-4">
+                            <h2 class="mb-2 text-lg font-medium dark:text-white text-gray-900">Product Name</h2>
+                            <p class="mb-2 text-base dark:text-gray-300 text-gray-700">Product description goes here.</p>
+                            <div class="flex items-center">
+                                <p class="mr-2 text-lg font-semibold text-gray-900 dark:text-white">$20.00</p>
+                                <p class="text-base  font-medium text-gray-500 line-through dark:text-gray-300">$25.00</p>
+                                <p class="ml-auto text-base font-medium text-green-500">20% off</p>
                             </div>
-                            @if ($item->getFirstMediaUrl('product_image'))
-                                <img class="object-cover w-full h-full hover:scale-110 ease-in-out duration-300"
-                                     src="{{ $item->getFirstMediaUrl('product_image') }}"
-                                     alt="">
-                            @else
-                                {{-- Tampilkan gambar default jika URL tidak tersedia --}}
-                                <img class="object-cover w-full h-full hover:scale-110 ease-in-out duration-300 "
-                                     src="{{ asset('default.png') }}"
-                                     alt="Default Image">
-                            @endif
-                        </div>
-                        <div class="px-5 py-3">
-                            <strong><h1 class="text-gray-700 uppercase justify-center flex">{{ $item->name }}</h1></strong>
-                            <h3 class="text-gray-500 mt-2 font-bold justify-center flex">{{ formatCurrency($item->price) }}</h3>
-                        </div>
-                        <div class="flex items-start justify-start px-5 py-3">
-                            <span class="text-black-100 text-sm mt-2 justify-center flex rounded bg-neutral-200 px-2 opacity-70 py-1 font-bold text-neutral-600">{{ $item->category->name }}</span>
                         </div>
                     </div>
                 @endif

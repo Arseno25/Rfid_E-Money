@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\OrderResource\Widgets\OrderOverview;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -30,7 +31,7 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', Failed::$name)->count();
+        return static::getModel()::ofToday()->where('status', Failed::$name)->count();
     }
 
     public static function getNavigationBadgeColor(): string|array|null

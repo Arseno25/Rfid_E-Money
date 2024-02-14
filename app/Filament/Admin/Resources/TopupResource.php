@@ -5,10 +5,15 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\TopupResource\Pages;
 use App\Filament\Admin\Resources\TopupResource\RelationManagers;
 use App\Models\Customer;
+use App\Models\States\OrderStatus\Failed;
+use App\Models\States\OrderStatus\Success;
 use App\Models\Topup;
 use AymanAlhattami\FilamentDateScopesFilter\DateScopeFilter;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -74,6 +79,23 @@ class TopupResource extends Resource
 //                    Tables\Actions\DeleteBulkAction::make(),
 //                ]),
             ])->defaultSort('created_at', 'desc');
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Top Up')
+                    ->icon('heroicon-m-shopping-bag')
+                    ->schema([
+                        TextEntry::make('customer.name')->label('Name'),
+                        TextEntry::make('customer.uid')->label('UID'),
+                        TextEntry::make('balance')->label('Balance')->prefix('Rp. '),
+                        TextEntry::make('created_at')->label('Payment Time')->dateTime('D, d M Y H:i:s'),
+                    ])
+                    ->columns(1)
+                    ->compact(),
+            ]);
     }
 
     public static function getRelations(): array

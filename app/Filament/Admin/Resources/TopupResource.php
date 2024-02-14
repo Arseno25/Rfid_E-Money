@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\TopupResource\Pages;
 use App\Filament\Admin\Resources\TopupResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\Topup;
+use AymanAlhattami\FilamentDateScopesFilter\DateScopeFilter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -62,16 +63,17 @@ class TopupResource extends Resource
                     ->dateTime('d M Y H:i:s'),
             ])
             ->filters([
-                //
+                DateScopeFilter::make('created_at')
+                    ->label('Created At'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

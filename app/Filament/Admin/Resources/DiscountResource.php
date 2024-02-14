@@ -89,7 +89,7 @@ class DiscountResource extends Resource
                     ->icon('heroicon-o-x-circle')
                     ->action(fn (Collection $records) => $records->each->update(['status' => Inactive::$name])),
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

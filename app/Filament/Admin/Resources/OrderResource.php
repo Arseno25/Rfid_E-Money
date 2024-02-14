@@ -104,7 +104,7 @@ class OrderResource extends Resource
             ])
             ->groupedbulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function infolist(Infolist $infolist): Infolist

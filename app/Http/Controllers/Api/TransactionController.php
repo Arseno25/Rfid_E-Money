@@ -110,7 +110,7 @@ class TransactionController extends Controller
                 return response()->json($error_response);
             }
 
-            $product->decrement('stock', $qty_barang);
+            $product->stock -= $qty_barang;
 
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang) - $discount_amount;

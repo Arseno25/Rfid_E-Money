@@ -39,18 +39,19 @@ class CustomerResource extends Resource
                     ->tel(),
                 Forms\Components\TextInput::make('uid')
                     ->label('UID')
+                    ->readOnlyOn('edit')
                     ->required(),
                 Forms\Components\TextInput::make('balance')
                     ->label('Balance')
                     ->prefix('Rp. ')
                     ->numeric()
-                    ->readOnlyOn('edit' )
+                    ->readOnlyOn('edit')
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->searchable()
+                    ->placeholder('Select a status')
                     ->preload()
-                ->default(Active::$name)
                     ->options([
                         Active::$name => Active::$name,
                         Inactive::$name => Inactive::$name

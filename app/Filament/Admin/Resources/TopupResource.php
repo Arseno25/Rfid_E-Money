@@ -24,7 +24,7 @@ class TopupResource extends Resource
 {
     protected static ?string $model = Topup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $label = 'Topup';
 
@@ -86,7 +86,7 @@ class TopupResource extends Resource
         return $infolist
             ->schema([
                 Section::make('Top Up')
-                    ->icon('heroicon-m-shopping-bag')
+                    ->icon('heroicon-m-banknotes')
                     ->schema([
                         TextEntry::make('customer.name')->label('Name'),
                         TextEntry::make('customer.uid')->label('UID'),

@@ -20,7 +20,7 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $navigationGroup = 'Customers Management';
 
     public static function getGloballySearchableAttributes(): array
     {

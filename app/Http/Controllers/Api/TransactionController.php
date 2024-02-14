@@ -126,7 +126,7 @@ class TransactionController extends Controller
             $product->decrement('stock', $qty_barang);
 
             // Update saldo user
-            $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
+            $saldo_setelah_transaksi = ($product->price * $qty_barang) - $user->balance;
 
             if ($saldo_setelah_transaksi < 0) {
                 DB::rollback();

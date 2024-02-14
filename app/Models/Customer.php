@@ -24,4 +24,9 @@ class Customer extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function topups() : HasMany
+    {
+        return $this->hasMany(Topup::class);
+    }
+
 }

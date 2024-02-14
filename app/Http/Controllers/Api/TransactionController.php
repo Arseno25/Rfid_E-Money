@@ -46,7 +46,7 @@ class TransactionController extends Controller
         return $this->processTransaction($user, $product, $qty_barang);
     }
 
-    private function validateInput($uid, $qty_barang, $status)
+    private function validateInput($uid, $qty_barang, $status = null)
     {
         // Memastikan input yang valid
         if (!$uid || !is_numeric($qty_barang)) {

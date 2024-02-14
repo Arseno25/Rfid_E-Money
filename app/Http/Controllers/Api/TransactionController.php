@@ -36,8 +36,6 @@ class TransactionController extends Controller
             return response()->json($error_response);
         }
 
-
-
         // Mendapatkan data produk
         $product = Product::find($request->input('product_id'));
         if (!$product || $product->is_enabled == 0) {
@@ -115,7 +113,7 @@ class TransactionController extends Controller
             $product->decrement('stock', $qty_barang);
 
             // Update saldo user
-            $saldo_setelah_transaksi = ($product->price * $qty_barang) - $user->balance;
+            $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang) + $discount_amount;
 
             if ($saldo_setelah_transaksi < 0) {
                 DB::rollback();

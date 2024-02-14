@@ -46,13 +46,17 @@ class TransactionController extends Controller
         return $this->processTransaction($user, $product, $qty_barang);
     }
 
-    private function validateInput($uid, $qty_barang )
+    private function validateInput($uid, $qty_barang, $status)
     {
         // Memastikan input yang valid
         if (!$uid || !is_numeric($qty_barang)) {
             return [
                 'success' => false,
-                'response' => ['message' => 'ID Belum Terdaftar atau Jumlah Barang Tidak Valid'],
+                'response' => [
+                    'message' => 'Input tidak valid' . $uid . $qty_barang,
+                    'data' => null,
+                    'errors' => $status,
+                ],
             ];
         }
 
@@ -113,7 +117,7 @@ class TransactionController extends Controller
             $product->stock -= $qty_barang;
 
             // Update saldo user
-            $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang) - $discount_amount;
+            $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
 
             if ($saldo_setelah_transaksi < 0) {
                 DB::rollback();

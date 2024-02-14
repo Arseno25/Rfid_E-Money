@@ -6,8 +6,10 @@ use App\Filament\Admin\Resources\CustomerResource\Pages;
 use App\Models\Customer;
 use App\Models\States\Status\Active;
 use App\Models\States\Status\Inactive;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -72,6 +74,8 @@ class CustomerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('uid')
                     ->label('UID')
+                    ->copyable()
+                    ->copyMessage('UID copied to clipboard')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->label('Balance')

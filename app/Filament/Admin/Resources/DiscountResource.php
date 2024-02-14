@@ -38,7 +38,7 @@ class DiscountResource extends Resource
                     ->label('Status')
                     ->searchable()
                     ->preload()
-                    ->default(Active::$name)
+                    ->placeholder('Select a status')
                     ->options([
                         Active::$name => Active::$name,
                         Inactive::$name => Inactive::$name

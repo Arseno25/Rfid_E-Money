@@ -166,7 +166,6 @@ class TransactionController extends Controller
                     "Total Diskon" => 'Rp.' . $discount_amount,
                     "Total Bayar" => 'Rp.' . ($product->price * $qty_barang - $discount_amount),
                     "Saldo Akhir" => 'Rp.' . (int)$user->balance,
-                    "Total Poin" => (int)$user->point . ' poin',
                 ],
             ]);
         } catch (QueryException $e) {

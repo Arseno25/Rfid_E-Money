@@ -61,7 +61,7 @@ class ProductResource extends Resource
                     ->collection('product_image')
                     ->optimize('webp')
                 ->columnSpanFull(),
-            ]);
+            ])->statePath('data');
     }
 
     public static function table(Table $table): Table

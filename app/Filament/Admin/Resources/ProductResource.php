@@ -22,10 +22,6 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Shop';
 
-    public static function getGloballySearchableAttributes(): array
-    {
-        return ['name', 'price', 'stock', 'category.name', ];
-    }
 
     public static function form(Form $form): Form
     {
@@ -40,7 +36,6 @@ class ProductResource extends Resource
                 ->required(),
                 Forms\Components\TextInput::make('stock')
                 ->label('Stock')
-                    ->reactive()
                 ->required(),
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
@@ -61,7 +56,7 @@ class ProductResource extends Resource
                     ->collection('product_image')
                     ->optimize('webp')
                 ->columnSpanFull(),
-            ])->statePath('data');
+            ]);
     }
 
     public static function table(Table $table): Table

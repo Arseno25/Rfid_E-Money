@@ -43,14 +43,4 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsTo(Discount::class);
     }
-
-    public function getCountAttribute(): int
-    {
-        return $this->where('stock', '>', 0)->count();
-    }
-
-    public function getTotalAttribute(): int
-    {
-        return $this->where('stock', '>', 0)->sum('stock');
-    }
 }

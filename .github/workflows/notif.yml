@@ -38,6 +38,4 @@ jobs:
         with:
             to: ${{ secrets.TELEGRAM_CHAT_ID }}
             token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-            message: |
-                🚀 New PR merged to ${{ steps.pr_target_branch.outputs.PR_TARGET_BRANCH }} from ${{ steps.pr_source_branch.outputs.PR_SOURCE_BRANCH }} by ${{ steps.commit_author.outputs.COMMIT_AUTHOR }}
-                [View PR](
+            message: "PR ${{ steps.pr.outputs.PR_NUMBER }} merged from ${{ steps.pr_source_branch.outputs.PR_SOURCE_BRANCH }} to ${{ steps.pr_target_branch.outputs.PR_TARGET_BRANCH }} by ${{ steps.commit_author.outputs.COMMIT_AUTHOR }}"

@@ -15,7 +15,7 @@ jobs:
 
       - name: Identify merged commit
         run: |
-          git fetch origin main
+          git fetch origin development
           MERGED_COMMIT=$(git log origin/main..HEAD --pretty=format:"%H" -1)
           COMMIT_AUTHOR=$(git log --format="%an <%ae>" -n 1 $MERGED_COMMIT)
           COMMIT_MESSAGE=$(git log --format=%B -n 1 $MERGED_COMMIT)

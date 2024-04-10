@@ -115,7 +115,7 @@ class OrderResource extends Resource
                 ->icon('heroicon-m-shopping-bag')
                 ->schema([
                     TextEntry::make('customer.name')->label('Name'),
-                    TextEntry::make('customer.uid')->label('UID'),
+                    TextEntry::make('customer.uid')->label('UID Customer'),
                     TextEntry::make('product.name')->label('Product'),
                     TextEntry::make('product.category.name')->label('Category'),
                     TextEntry::make('status')

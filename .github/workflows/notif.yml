@@ -1,12 +1,14 @@
 name: Notify on Merge
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - '*'
 
 jobs:
   notify:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,11 +19,11 @@ jobs:
       - name: Fetch updates from origin
         run: git fetch origin development
 
-      - name: Get PR number
-        id: pr
+      - name: Get Base Branch Name
+        id: base_branch
         run: |
-          PR_NUMBER=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" | jq '.[0].number')
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          BASE_BRANCH=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r .base.ref)
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
 
       - name: Get PR source branch
         id: pr_source_branch
@@ -57,6 +59,6 @@ jobs:
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
-            to: ${{ secrets.TELEGRAM_CHAT_ID }}
-            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-            message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to PR #${{ env.PR_NUMBER }} on ${{ env.HOSTNAME }}. \nCommit: '${{ env.COMMIT_MESSAGE }}' \nPR Title: '${{ env.PR_TITLE }}'."
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to PR #${{ env.BASE_BRANCH }} on ${{ env.HOSTNAME }}. \nCommit: '${{ env.COMMIT_MESSAGE }}' \nPR Title: '${{ env.PR_TITLE }}'."

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->text('response')->after('status')->nullable();
+        Schema::table('http_logs', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Order::class);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('response');
+        Schema::table('http_logs', function (Blueprint $table) {
+            $table->dropColumn('order_id');
         });
     }
 };

@@ -20,6 +20,17 @@ class TransactionController extends Controller
 {
     public function prosesTransaksi(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'uid' => 'required',
+            'qty' => 'required|numeric',
+            'product_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $error_response  = $this->generateErrorResponse("ID Belum Terdaftar atau Jumlah Barang Tidak Valid");
+            return response()->json($error_response);
+        }
+
         $uid = $request->input('uid');
         $qty_barang = $request->input('qty');
 
@@ -36,6 +47,8 @@ class TransactionController extends Controller
             return response()->json($error_response);
         }
 
+
+
         // Mendapatkan data produk
         $product = Product::find($request->input('product_id'));
         if (!$product || $product->is_enabled == 0) {
@@ -46,17 +59,13 @@ class TransactionController extends Controller
         return $this->processTransaction($user, $product, $qty_barang);
     }
 
-    private function validateInput($uid, $qty_barang, $status = null)
+    private function validateInput($uid, $qty_barang )
     {
         // Memastikan input yang valid
         if (!$uid || !is_numeric($qty_barang)) {
             return [
                 'success' => false,
-                'response' => [
-                    'message' => 'Input tidak valid' . $uid . $qty_barang,
-                    'data' => null,
-                    'errors' => $status,
-                ],
+                'response' => ['message' => 'ID Belum Terdaftar atau Jumlah Barang Tidak Valid'],
             ];
         }
 
@@ -114,7 +123,7 @@ class TransactionController extends Controller
                 return response()->json($error_response);
             }
 
-            $product->stock -= $qty_barang;
+            $product->decrement('stock', $qty_barang);
 
             // Update saldo user
             $saldo_setelah_transaksi = $user->balance - ($product->price * $qty_barang);
@@ -166,6 +175,7 @@ class TransactionController extends Controller
                     "Total Diskon" => 'Rp.' . $discount_amount,
                     "Total Bayar" => 'Rp.' . ($product->price * $qty_barang - $discount_amount),
                     "Saldo Akhir" => 'Rp.' . (int)$user->balance,
+                    "Total Poin" => (int)$user->point . ' poin',
                 ],
             ]);
         } catch (QueryException $e) {

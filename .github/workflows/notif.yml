@@ -47,9 +47,16 @@ jobs:
           PR_TITLE=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r .title)
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
 
+      - name: Get Hostname from Git Remote URL
+        id: get_hostname
+        run: |
+          URL=$(git config --get remote.origin.url)
+          HOSTNAME=$(echo $URL | awk -F/ '{print $3}')
+          echo "HOSTNAME=$HOSTNAME" >> $GITHUB_ENV
+
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to ${{ env.PR_NUMBER }}. \nCommit: '${{ env.COMMIT_MESSAGE }}' \n'${{ env.PR_TITLE }}'."
+            to: ${{ secrets.TELEGRAM_CHAT_ID }}
+            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to PR #${{ env.PR_NUMBER }} on ${{ env.HOSTNAME }}. \nCommit: '${{ env.COMMIT_MESSAGE }}' \nPR Title: '${{ env.PR_TITLE }}'."

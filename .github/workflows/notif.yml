@@ -36,6 +36,6 @@ jobs:
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
-            to: ${{ secrets.TELEGRAM_CHAT_ID }}
-            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-            message: "PR ${{ steps.pr.outputs.PR_NUMBER }} merged from ${{ steps.pr_source_branch.outputs.PR_SOURCE_BRANCH }} to ${{ steps.pr_target_branch.outputs.PR_TARGET_BRANCH }} by ${{ steps.commit_author.outputs.COMMIT_AUTHOR }}"
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "PR ${{ env.PR_NUMBER }} merged from ${{ env.PR_SOURCE_BRANCH }} to ${{ env.PR_TARGET_BRANCH }} by ${{ env.COMMIT_AUTHOR }}"

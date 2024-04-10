@@ -19,7 +19,9 @@ jobs:
 
       - name: Get PR number
         id: pr
-        run: echo "PR_NUMBER=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_ENV
+        run: |
+          PR_NUMBER=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" | jq '.[0].number')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Get PR source branch
         id: pr_source_branch
@@ -27,7 +29,7 @@ jobs:
 
       - name: Get PR target branch
         id: pr_target_branch
-        run: echo "PR_TARGET_BRANCH=$(git show --no-patch --format='%B' ${{ steps.pr.outputs.PR_NUMBER }} | grep -oP 'to \K\w+')" >> $GITHUB_ENV
+        run: echo "PR_TARGET_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
       - name: Get commit author
         id: commit_author
@@ -37,7 +39,7 @@ jobs:
         id: commit_message
         run: echo "COMMIT_MESSAGE=$(git show --no-patch --format='%s' ${{ steps.pr.outputs.PR_NUMBER }})" >> $GITHUB_ENV
 
-      - name: Get PR title
+      - name: Retrieve Pull Request Title
         id: pr_title
         run: |
           PR_TITLE=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r .title)
@@ -48,4 +50,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to ${{ env.PR_NUMBER }}. Commit: '${{ env.COMMIT_MESSAGE }}'"
+          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to ${{ env.PR_NUMBER }}. Commit: '${{ env.COMMIT_MESSAGE }}' /n PR Title: ${{ env.PR_TITLE }} \n PR Source Branch: ${{ env.PR_SOURCE_BRANCH }} /n PR Target Branch: ${{ env.PR_TARGET_BRANCH }}"

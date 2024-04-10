@@ -16,7 +16,7 @@ jobs:
       - name: Identify merged commit
         run: |
           git fetch origin development
-          MERGED_COMMIT=$(git log origin/main..HEAD --pretty=format:"%H" -1)
+          MERGED_COMMIT=$(git log origin/development..HEAD --pretty=format:"%H" -1)
           COMMIT_AUTHOR=$(git log --format="%an <%ae>" -n 1 $MERGED_COMMIT)
           COMMIT_MESSAGE=$(git log --format=%B -n 1 $MERGED_COMMIT)
           PR_SOURCE_BRANCH=$(jq -r ".pull_request.head.ref" "$GITHUB_EVENT_PATH")

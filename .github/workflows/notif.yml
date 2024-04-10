@@ -33,9 +33,13 @@ jobs:
         id: commit_author
         run: echo "COMMIT_AUTHOR=$(git show --no-patch --format='%an' ${{ steps.pr.outputs.PR_NUMBER }})" >> $GITHUB_ENV
 
+      - name: Get commit message
+        id: commit_message
+        run: echo "COMMIT_MESSAGE=$(git show --no-patch --format='%s' ${{ steps.pr.outputs.PR_NUMBER }})" >> $GITHUB_ENV
+
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "PR ${{ env.PR_NUMBER }} merged from ${{ env.PR_SOURCE_BRANCH }} to ${{ env.PR_TARGET_BRANCH }} by ${{ env.COMMIT_AUTHOR }}"
+          message: "PR ${{ env.PR_NUMBER }} merged from ${{ env.PR_SOURCE_BRANCH }} to ${{ env.PR_TARGET_BRANCH }} by ${{ env.COMMIT_AUTHOR }}. Commit message: '${{ env.COMMIT_MESSAGE }}'"

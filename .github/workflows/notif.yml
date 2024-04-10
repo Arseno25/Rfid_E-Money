@@ -10,22 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Fetch updates from origin
         run: git fetch origin development
 
-      - name: Identify merged commit
-        run: |
-          MERGED_COMMIT=$(git log origin/development..HEAD --pretty=format:"%H" -1)
-          COMMIT_AUTHOR=$(git log --format="%an <%ae>" -n 1 $MERGED_COMMIT)
-          COMMIT_MESSAGE=$(git log --format=%B -n 1 $MERGED_COMMIT)
-          echo "MERGED_COMMIT=$MERGED_COMMIT" >> $GITHUB_ENV
-          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
-          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+      - name: Get PR number
+        id: pr
+        run: echo "PR_NUMBER=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_ENV
+
+      - name: Get PR source branch
+        id: pr_source_branch
+        run: echo "PR_SOURCE_BRANCH=$(git show --no-patch --format='%B' ${{ steps.pr.outputs.PR_NUMBER }} | grep -oP 'from \K\w+')" >> $GITHUB_ENV
+
+      - name: Get PR target branch
+        id: pr_target_branch
+        run: echo "PR_TARGET_BRANCH=$(git show --no-patch --format='%B' ${{ steps.pr.outputs.PR_NUMBER }} | grep -oP 'to \K\w+')" >> $GITHUB_ENV
+
+      - name: Get commit author
+        id: commit_author
+        run: echo "COMMIT_AUTHOR=$(git show --no-patch --format='%an' ${{ steps.pr.outputs.PR_NUMBER }})" >> $GITHUB_ENV
 
       - name: Send Telegram Notification
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="Arseno telah melakukan merge dari branch $PR_SOURCE_BRANCH ke $PR_TARGET_BRANCH di repository ini"
+        uses: appleboy/telegram-action@master
+        with:
+            to: ${{ secrets.TELEGRAM_CHAT_ID }}
+            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            message: |
+                🚀 New PR merged to ${{ steps.pr_target_branch.outputs.PR_TARGET_BRANCH }} from ${{ steps.pr_source_branch.outputs.PR_SOURCE_BRANCH }} by ${{ steps.commit_author.outputs.COMMIT_AUTHOR }}
+                [View PR](

@@ -25,7 +25,9 @@ jobs:
 
       - name: Get PR source branch
         id: pr_source_branch
-        run: echo "PR_SOURCE_BRANCH=$(git show --no-patch --format='%B' ${{ steps.pr.outputs.PR_NUMBER }} | grep -oP 'from \K\w+')" >> $GITHUB_ENV
+        run: |
+          PR_SOURCE_BRANCH=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r .head.ref)
+          echo "PR_SOURCE_BRANCH=$PR_SOURCE_BRANCH" >> $GITHUB_ENV
 
       - name: Get PR target branch
         id: pr_target_branch
@@ -50,4 +52,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to ${{ env.PR_NUMBER }}. Commit: '${{ env.COMMIT_MESSAGE }}' /n PR Title: ${{ env.PR_TITLE }} \n PR Source Branch: ${{ env.PR_SOURCE_BRANCH }} /n PR Target Branch: ${{ env.PR_TARGET_BRANCH }}"
+          message: "${{ env.COMMIT_AUTHOR }} upload some a fresh code to ${{ env.PR_NUMBER }}. \nCommit: '${{ env.COMMIT_MESSAGE }}' \n'${{ env.PR_TITLE }}'."

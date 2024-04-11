@@ -53,4 +53,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code! \n ${{ env.PR_TARGET_BRANCH }}. \n\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \n\nTitle: ${{ env.PR_TITLE }}."
+          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code! \n ${{ env.PR_TARGET_BRANCH }}. \n\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \nMessage: ${{ env.PR_TITLE }} (#${{ env.PR_NUMBER }})."

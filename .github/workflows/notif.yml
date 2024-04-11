@@ -63,7 +63,7 @@ jobs:
           message: |
             ${{ env.COMMIT_AUTHOR }} deploy some fresh code!
 
-            *Server: ${{ env.SERVER_NAME }}
-            *Site: ${{ env.SITE_NAME }}
-            *Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-            *Message: ${{ env.PR_TITLE }}.
+            *bold \*Server:* ${{ env.SERVER_NAME }}
+            Site: ${{ env.SITE_NAME }}
+            Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            Message: ${{ env.PR_TITLE }}.

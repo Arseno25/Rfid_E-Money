@@ -58,4 +58,12 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_GROUP_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code! \n\nServer: ${{ env.SERVER_NAME }} \nSite: ${{ env.SITE_NAME }} \nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \nMessage: ${{ env.PR_TITLE }}."
+          disable_web_page_preview: true
+          format: html
+          message: |
+              ${{ env.COMMIT_AUTHOR }} deploy some fresh code!
+
+              <b>Server:</b> ${{ env.SERVER_NAME }}
+            <b>Site:</b> ${{ env.SITE_NAME }}
+            <b>Commit:</b> https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            <b>Message:</b> ${{ env.PR_TITLE }}."

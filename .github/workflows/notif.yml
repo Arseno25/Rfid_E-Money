@@ -59,7 +59,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_GROUP_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           disable_web_page_preview: true
-#          format: html
+          format: Markdown
           message: |
             ${{ env.COMMIT_AUTHOR }} deploy some fresh code!
 

@@ -48,9 +48,14 @@ jobs:
           PR_TITLE=$(curl --silent --location --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r .title)
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
 
+      - name: Set server and site environment variables
+        run: |
+          echo "SERVER_NAME=${{ secrets.SERVER_NAME }}" >> $GITHUB_ENV
+          echo "SITE_NAME=${{ secrets.SITE_NAME }}" >> $GITHUB_ENV
+
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code! \n ${{ env.PR_TARGET_BRANCH }}. \n\nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \nMessage: ${{ env.PR_TITLE }} (#${{ env.PR_NUMBER }})."
+          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code!. \nServer: ${{ env.SERVER_NAME }} \nSite: ${{ env.SITE_NAME }} \nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \nMessage: ${{ env.PR_TITLE }} (#${{ env.PR_NUMBER }})."

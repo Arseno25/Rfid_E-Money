@@ -56,7 +56,6 @@ jobs:
       - name: Send Telegram Notification
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          to: ${{ secrets.TELEGRAM_GROUP_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code!. \n\n<b>Server:</b> ${{ env.SERVER_NAME }} \n<b>Site:</b> ${{ env.SITE_NAME }} \n<b>Commit:</b> https://github.com/${{ github.repository }}/commit/${{ github.sha }} \n<b>Message:</b> ${{ env.PR_TITLE }}."
-          parse_mode: HTML
+          message: "${{ env.COMMIT_AUTHOR }} deploy some fresh code!. \n\nServer: ${{ env.SERVER_NAME }} \nSite: ${{ env.SITE_NAME }} \nCommit: https://github.com/${{ github.repository }}/commit/${{ github.sha }} \nMessage: ${{ env.PR_TITLE }}."

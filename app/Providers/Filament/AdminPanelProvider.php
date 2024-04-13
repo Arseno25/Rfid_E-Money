@@ -56,7 +56,6 @@ class AdminPanelProvider extends PanelProvider
 
                     ])
                     ->sortBy('navigation'),
-//                MaintenanceSwitchPlugin::make(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make()
             ])
             ->databaseNotifications()

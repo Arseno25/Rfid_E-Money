@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use AymanAlhattami\FilamentDateScopesFilter\DateScopeFilter;
